@@ -259,7 +259,7 @@ func NewMCPHandler(cfg MCPConfig) http.Handler {
 	if cfg.Sessions == nil {
 		return mcp.NewStreamableHTTPHandler(func(*http.Request) *mcp.Server {
 			return NewMCPServer(cfg, nil)
-		}, nil)
+		}, &mcp.StreamableHTTPOptions{Stateless: true})
 	}
 
 	return h
@@ -293,9 +293,14 @@ func (h *mcpHandler) handlerFor(apiKey string) http.Handler {
 	provider := NewSessionProvider(h.cfg.Sessions, id, apiKey)
 
 	srv := NewMCPServer(h.cfg, provider)
+	// ChatGPT now probes server/discover using MCP 2026-07-28. The Go SDK
+	// only accepts that Streamable HTTP revision in stateless mode; otherwise
+	// it advertises legacy versions and some clients fail tool discovery
+	// instead of falling back to initialize. Authentication and TrueNAS
+	// identity remain bound to the bearer credential above, not an MCP session.
 	handler := mcp.NewStreamableHTTPHandler(func(*http.Request) *mcp.Server {
 		return srv
-	}, nil)
+	}, &mcp.StreamableHTTPOptions{Stateless: true})
 
 	h.servers[id] = srv
 	h.http[id] = handler
