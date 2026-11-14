@@ -33,7 +33,7 @@ func registerConfigWrites(srv *mcp.Server, session sessionFor) {
 }
 
 func registerConfigWrite(srv *mcp.Server, w tools.ConfigWriteOp, session sessionFor) {
-	mcp.AddTool(srv, &mcp.Tool{
+	addToolWithoutOutputSchema(srv, &mcp.Tool{
 		Name:        w.Name,
 		Description: w.Description,
 		// Never idempotent: creating a share twice makes two shares, and an ACL

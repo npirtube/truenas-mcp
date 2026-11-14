@@ -142,7 +142,7 @@ func registerWrite(srv *mcp.Server, w tools.WriteOp, session sessionFor) {
 }
 
 func registerWriteOp[In writeInput](srv *mcp.Server, w tools.WriteOp, session sessionFor) {
-	mcp.AddTool(srv, &mcp.Tool{
+	addToolWithoutOutputSchema(srv, &mcp.Tool{
 		Name:        w.Name,
 		Description: writeDescription(w),
 		Annotations: writeAnnotations(w.Title, w.Destructive, w.Idempotent),

@@ -26,7 +26,7 @@ type JobsOutput struct {
 }
 
 func registerJobs(srv *mcp.Server, session sessionFor) {
-	mcp.AddTool(srv, &mcp.Tool{
+	addToolWithoutOutputSchema(srv, &mcp.Tool{
 		Name: "jobs",
 		Description: "Follow long-running TrueNAS operations.\n\nOperations:\n" +
 			"  list — recent jobs and their state\n" +

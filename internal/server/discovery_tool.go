@@ -234,7 +234,7 @@ func registerDiscovery(srv *mcp.Server, session sessionFor, writesEnabled bool) 
 		}, nil
 	})
 
-	mcp.AddTool(srv, &mcp.Tool{
+	addToolWithoutOutputSchema(srv, &mcp.Tool{
 		Name: "call_method",
 		Description: "Invoke a TrueNAS middleware method directly. Use describe_method first " +
 			"to learn its parameters. Only methods this server allows are callable.",

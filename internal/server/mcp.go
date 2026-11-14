@@ -62,6 +62,27 @@ type SystemInfoOutput struct {
 
 type emptyInput struct{}
 
+// addToolWithoutOutputSchema registers a typed handler whose output contains
+// values with an intentionally dynamic JSON shape. The Go SDK infers an
+// outputSchema from the surrounding struct, but a field of type any is emitted
+// as an annotation-only schema (for example, {"description":"..."}). Some
+// MCP clients reject that schema while discovering tools. Output schemas are
+// optional; the SDK still serializes out into structuredContent and text when
+// Out is any, so callers receive the same result without an inaccurate schema.
+func addToolWithoutOutputSchema[In, Out any](
+	srv *mcp.Server,
+	tool *mcp.Tool,
+	handler func(context.Context, *mcp.CallToolRequest, In) (*mcp.CallToolResult, Out, error),
+) {
+	mcp.AddTool[In, any](srv, tool, func(
+		ctx context.Context,
+		req *mcp.CallToolRequest,
+		in In,
+	) (*mcp.CallToolResult, any, error) {
+		return handler(ctx, req, in)
+	})
+}
+
 // sessionFor is how a tool reaches the middleware under the caller's identity.
 type sessionFor func(context.Context) (*Session, error)
 

@@ -106,7 +106,7 @@ func (in DispatchInput) args() tools.Args {
 
 // registerConcern exposes one concern as a dispatch tool.
 func registerConcern(srv *mcp.Server, c *tools.Concern, session sessionFor) {
-	mcp.AddTool(srv, &mcp.Tool{
+	addToolWithoutOutputSchema(srv, &mcp.Tool{
 		Name:        c.Name,
 		Description: c.ToolDescription(),
 		Annotations: readAnnotations(c.Title),
